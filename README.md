@@ -39,3 +39,64 @@ python -m coverage report -m
 # Project status
 
 Educational project for learning Python package development, testing, type hints, and code quality practices.
+
+# Example Applications
+
+PyUtility includes example applications demonstrating its main features.
+
+# 1. Decorators
+
+File: `examples/decorator_example.py`
+
+Demonstrates:
+- Caching function results using `cache_result`
+- Retrying failed operations using `retry`
+- Validating function arguments using `validate_arguments`
+
+Run:
+
+python examples/decorator_example.py
+
+# 2. Generator Pipelines
+
+File: `examples/pipeline_example.py`
+
+Demonstrates:
+- Transforming data using `map_items`
+- Filtering data using `filter_items`
+- Dividing data into chunks using `chunk_items`
+
+Run:
+
+python examples/pipeline_example.py
+
+# 3. Database Context Manager
+
+File: `examples/context_manager_example.py`
+
+Demonstrates:
+- Creating a temporary SQLite database
+- Creating a table and inserting records
+- Retrieving records using SQL
+- Managing database resources with a context manager
+
+Run:
+
+python examples/context_manager_example.py
+
+# 4. Plugin Registration
+
+File: `examples/plugin_example.py`
+
+Demonstrates:
+- Automatic plugin registration using `PluginMeta`
+- Creating custom plugin classes
+- Executing registered plugins
+
+Run:
+
+python examples/plugin_example.py
+
+# Running the Examples
+
+Run these commands from the project's root directory after installing the project dependencies and activating the virtual environment.
