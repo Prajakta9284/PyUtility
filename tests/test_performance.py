@@ -3,7 +3,7 @@ from time import perf_counter
 from pyutility.pipeline import filter_items
 
 
-def test_pipeline_performance():
+def test_pipeline_performance() -> None:
     values = range(100_000)
 
     start = perf_counter()

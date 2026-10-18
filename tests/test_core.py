@@ -13,8 +13,8 @@ from pyutility.serialization import from_json, to_json
 
 class TestDecorators(unittest.TestCase):
 
-    def test_cache_result(self):
-        calls = []
+    def test_cache_result(self) -> None:
+        calls: list[int] = []
 
         @cache_result
         def add(a: int, b: int) -> int:
@@ -25,8 +25,8 @@ class TestDecorators(unittest.TestCase):
         self.assertEqual(add(2, 3), 5)
         self.assertEqual(len(calls), 1)
 
-    def test_retry(self):
-        calls = []
+    def test_retry(self) -> None:
+        calls: list[int] = []
 
         @retry(attempts=3, exceptions=(ValueError,))
         def unreliable() -> str:
@@ -38,7 +38,7 @@ class TestDecorators(unittest.TestCase):
         self.assertEqual(unreliable(), "success")
         self.assertEqual(len(calls), 3)
 
-    def test_validation(self):
+    def test_validation(self) -> None:
         @validate_arguments(amount=lambda value: value > 0)
         def calculate(amount: int) -> int:
             return amount * 2
@@ -51,26 +51,26 @@ class TestDecorators(unittest.TestCase):
 
 class TestPipeline(unittest.TestCase):
 
-    def test_filter_items(self):
+    def test_filter_items(self) -> None:
         result = list(filter_items([1, 2, 3, 4], lambda x: x > 2))
         self.assertEqual(result, [3, 4])
 
-    def test_map_items(self):
+    def test_map_items(self) -> None:
         result = list(map_items([1, 2, 3], lambda x: x * 2))
         self.assertEqual(result, [2, 4, 6])
 
-    def test_chunk_items(self):
+    def test_chunk_items(self) -> None:
         result = list(chunk_items([1, 2, 3, 4, 5], 2))
         self.assertEqual(result, [[1, 2], [3, 4], [5]])
 
-    def test_invalid_chunk_size(self):
+    def test_invalid_chunk_size(self) -> None:
         with self.assertRaises(ValueError):
             list(chunk_items([1, 2], 0))
 
 
 class TestRegistry(unittest.TestCase):
 
-    def test_plugin_registration(self):
+    def test_plugin_registration(self) -> None:
         self.assertIn("GreetingPlugin", PluginMeta.registry)
         plugin = GreetingPlugin()
         self.assertEqual(plugin.run(), "Hello from the plugin!")
@@ -78,7 +78,7 @@ class TestRegistry(unittest.TestCase):
 
 class TestSerialization(unittest.TestCase):
 
-    def test_json_round_trip(self):
+    def test_json_round_trip(self) -> None:
         @dataclass
         class Product:
             name: str

@@ -1,62 +1,69 @@
 import csv
 from pathlib import Path
+from typing import Any, Iterator
 
-from pyutility import chunk_items, filter_items, map_items
 
-
-def load_sales(file_path: str) -> list[dict]:
+def load_sales_data(file_path: str) -> Iterator[dict[str, Any]]:
     """Load retail sales records from a CSV file."""
-    with open(file_path, "r", encoding="utf-8", newline="") as file:
-        return list(csv.DictReader(file))
+    with Path(file_path).open(
+        mode="r",
+        encoding="utf-8-sig",
+        newline="",
+    ) as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            yield dict(row)
 
 
-def analyze_sales(records: list[dict]) -> None:
-    """Analyze sales records and display basic business KPIs."""
+def analyze_sales(records: list[dict[str, Any]]) -> dict[str, Any]:
+    """Calculate basic retail sales metrics."""
+    total_sales = 0.0
+    total_profit = 0.0
+    total_quantity = 0
+    valid_records = 0
 
-    # Keep records with valid positive sales
-    valid_records = filter_items(
-        records,
-        lambda row: float(row["Sales"]) > 0,
-    )
-    valid_records = list(valid_records)
+    for record in records:
+        try:
+            sales = float(record.get("Sales", 0) or 0)
+            profit = float(record.get("Profit", 0) or 0)
+            quantity = int(float(record.get("Quantity", 0) or 0))
+        except (TypeError, ValueError):
+            continue
 
-    # Calculate total revenue
-    revenue_values = map_items(
-        valid_records,
-        lambda row: float(row["Sales"]),
-    )
-    total_revenue = sum(revenue_values)
+        total_sales += sales
+        total_profit += profit
+        total_quantity += quantity
+        valid_records += 1
 
-    # Count orders and customers
-    total_orders = len({row["Order_ID"] for row in valid_records})
-    total_customers = len({row["Customer_ID"] for row in valid_records})
+    return {
+        "valid_records": valid_records,
+        "total_sales": round(total_sales, 2),
+        "total_profit": round(total_profit, 2),
+        "total_quantity": total_quantity,
+        "average_sales": (
+            round(total_sales / valid_records, 2) if valid_records else 0.0
+        ),
+    }
 
-    print("\nRETAIL SALES ANALYSIS")
+
+def main() -> None:
+    """Run the retail sales analysis."""
+    file_path = "retail_sales_cleaned.csv"
+
+    if not Path(file_path).exists():
+        print(f"Dataset not found: {file_path}")
+        print("Place the CSV file in the project root directory.")
+        return
+
+    records = list(load_sales_data(file_path))
+    results = analyze_sales(records)
+
+    print("RETAIL SALES ANALYSIS")
     print("-" * 30)
-    print(f"Valid sales records: {len(valid_records)}")
-    print(f"Total revenue: {total_revenue:,.2f}")
-    print(f"Total orders: {total_orders}")
-    print(f"Unique customers: {total_customers}")
 
-    # Process records in chunks
-    print("\nProcessing records in chunks:")
-    for number, chunk in enumerate(chunk_items(valid_records, 100), start=1):
-        print(f"Chunk {number}: {len(chunk)} records")
+    for metric, value in results.items():
+        print(f"{metric.replace('_', ' ').title()}: {value}")
 
 
 if __name__ == "__main__":
-    # Change this path if your CSV file is stored elsewhere.
-    csv_path = (
-        Path.home()
-        / "OneDrive"
-        / "Desktop"
-        / "Retail Project"
-        / "retail_sales_cleaned.csv"
-    )
-
-    if csv_path.exists():
-        sales_records = load_sales(str(csv_path))
-        analyze_sales(sales_records)
-    else:
-        print(f"CSV file not found: {csv_path.resolve()}")
-        print("Place retail_sales_cleaned.csv in the project root.")
+    main()

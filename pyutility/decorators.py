@@ -45,7 +45,9 @@ def retry(
     return decorator
 
 
-def validate_arguments(**validators: Callable[[Any], bool]):
+def validate_arguments(
+    **validators: Callable[[Any], bool],
+) -> Callable[[F], F]:
     """Validate selected arguments using supplied predicate functions."""
 
     def decorator(func: F) -> F:

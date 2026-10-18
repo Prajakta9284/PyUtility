@@ -9,7 +9,7 @@ from pyutility.pipeline import filter_items, map_items
 
 class TestIntegration(unittest.TestCase):
 
-    def test_pipeline_and_database(self):
+    def test_pipeline_and_database(self) -> None:
         sales = [100, 200, 300, 400]
 
         high_sales = filter_items(sales, lambda value: value >= 200)
@@ -27,7 +27,6 @@ class TestIntegration(unittest.TestCase):
                     [(amount,) for amount in doubled_sales],
                 )
 
-            # the SQLite connection
             connection = sqlite3.connect(database)
 
             try:

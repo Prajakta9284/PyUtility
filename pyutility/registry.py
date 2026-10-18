@@ -6,7 +6,12 @@ class PluginMeta(type):
 
     registry: dict[str, type[Any]] = {}
 
-    def __new__(mcs, name: str, bases: tuple[type, ...], namespace: dict[str, Any]):
+    def __new__(
+        mcs,
+        name: str,
+        bases: tuple[type, ...],
+        namespace: dict[str, Any],
+    ) -> type:
         cls = super().__new__(mcs, name, bases, namespace)
 
         if namespace.get("register_plugin", True):
